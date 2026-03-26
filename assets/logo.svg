@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title>trust-onboard logo</title>
+  <desc>Simple shield logo for trust onboarding examples.</desc>
+  <rect width="256" height="256" rx="32" fill="#285943"/>
+  <path d="M128 36l68 24v54c0 47-28 85-68 106-40-21-68-59-68-106V60l68-24z" fill="#f6f3eb"/>
+  <path d="M128 72l40 14v29c0 28-15 52-40 67-25-15-40-39-40-67V86l40-14z" fill="#d4a15e"/>
+  <circle cx="128" cy="118" r="14" fill="#285943"/>
+  <path d="M128 136c-14 0-26 12-26 26v6h52v-6c0-14-12-26-26-26z" fill="#285943"/>
+</svg>

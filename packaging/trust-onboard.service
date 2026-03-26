@@ -1,0 +1,30 @@
+[Unit]
+Description=trust-onboard step-ca trust onboarding portal
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=trust-onboard
+Group=trust-onboard
+WorkingDirectory=/var/lib/trust-onboard
+ExecStart=/usr/local/bin/trust-onboard serve --config /etc/trust-onboard/config.yaml
+Restart=on-failure
+RestartSec=5s
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+ReadWritePaths=/var/lib/trust-onboard
+AmbientCapabilities=
+CapabilityBoundingSet=
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

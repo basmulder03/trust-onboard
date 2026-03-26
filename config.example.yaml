@@ -1,0 +1,54 @@
+site_title: Homelab Trust Onboarding
+organization_name: Mulder Homelab
+listen_address: ":8080"
+base_url: "https://trust.example.internal"
+displayed_ca_name: Homelab Root CA
+root_ca_cert_path: "assets/root_ca.crt"
+
+root_ca_locations:
+  source_path: "assets/root_ca.crt"
+  linux_paths:
+    - "/usr/local/share/ca-certificates/root_ca.crt"
+    - "/etc/pki/ca-trust/source/anchors/root_ca.crt"
+  macos_stores:
+    - "System keychain"
+    - "login keychain"
+  windows:
+    - "Local Computer > Trusted Root Certification Authorities"
+    - "Current User > Trusted Root Certification Authorities"
+  android:
+    - "Settings > Security > Encryption & credentials > Install a certificate"
+    - "Managed device certificate payload via MDM"
+  ios:
+    - "Downloaded configuration profile in Settings"
+    - "Managed device trust payload via MDM"
+  manual:
+    - "Distribute the PEM root certificate through your configuration management or MDM tooling"
+
+android:
+  cert_format: pem
+
+ios:
+  payload_identifier: "local.mulder.homelab.trust-onboard.root"
+  payload_display_name: "Mulder Homelab Root CA"
+  payload_organization: "Mulder Homelab"
+  payload_description: "Installs the public root certificate used by internal services."
+
+fingerprint:
+  auto_calculate: true
+  override: ""
+
+support_text: "If trust still fails, remove older copies of the root certificate and verify the fingerprint with your administrator."
+support_url: "https://wiki.example.internal/trust"
+logo_path: "assets/logo.svg"
+
+internal_domains:
+  - "step.example.internal"
+  - "grafana.example.internal"
+  - "nas.example.internal"
+
+external_domains:
+  - "vpn.example.com"
+
+footer_text: "Public trust onboarding for private infrastructure."
+advanced_section_enabled: true

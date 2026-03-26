@@ -1,0 +1,140 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            artifact: trust-onboard-linux-amd64
+          - goos: linux
+            goarch: arm64
+            artifact: trust-onboard-linux-arm64
+          - goos: darwin
+            goarch: amd64
+            artifact: trust-onboard-darwin-amd64
+          - goos: darwin
+            goarch: arm64
+            artifact: trust-onboard-darwin-arm64
+          - goos: windows
+            goarch: amd64
+            artifact: trust-onboard-windows-amd64.exe
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Test
+        run: go test ./...
+
+      - name: Build binary
+        env:
+          CGO_ENABLED: 0
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          mkdir -p dist
+          go build -trimpath -ldflags="-s -w" -o "dist/${{ matrix.artifact }}" ./cmd/trust-onboard
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/${{ matrix.artifact }}
+
+  package-linux:
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - goarch: amd64
+            package_arch: amd64
+            deb_name: trust-onboard_${VERSION}_linux_amd64.deb
+            rpm_name: trust-onboard-${VERSION}-1.x86_64.rpm
+          - goarch: arm64
+            package_arch: arm64
+            deb_name: trust-onboard_${VERSION}_linux_arm64.deb
+            rpm_name: trust-onboard-${VERSION}-1.aarch64.rpm
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Install nfpm
+        run: go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
+
+      - name: Build Linux binary
+        env:
+          CGO_ENABLED: 0
+          GOOS: linux
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          mkdir -p dist
+          go build -trimpath -ldflags="-s -w" -o ./bin/trust-onboard ./cmd/trust-onboard
+
+      - name: Build packages
+        env:
+          VERSION: ${{ github.ref_name }}
+          PACKAGE_ARCH: ${{ matrix.package_arch }}
+        run: |
+          mkdir -p dist
+          VERSION="${VERSION#v}"
+          export VERSION PACKAGE_ARCH
+          if [ "$PACKAGE_ARCH" = "amd64" ]; then RPM_ARCH=x86_64; else RPM_ARCH=aarch64; fi
+          "$HOME/go/bin/nfpm" package --packager deb --target "dist/trust-onboard_${VERSION}_linux_${PACKAGE_ARCH}.deb" --config ./packaging/nfpm.yaml
+          "$HOME/go/bin/nfpm" package --packager rpm --target "dist/trust-onboard-${VERSION}-1.${RPM_ARCH}.rpm" --config ./packaging/nfpm.yaml
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-packages-${{ matrix.package_arch }}
+          path: |
+            dist/*.deb
+            dist/*.rpm
+
+  release:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+      - package-linux
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+
+      - name: Flatten artifacts
+        run: |
+          mkdir -p dist
+          find release-artifacts -type f -exec cp {} dist/ \;
+
+      - name: Create checksums
+        run: |
+          cd dist
+          sha256sum * > sha256sums.txt
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*

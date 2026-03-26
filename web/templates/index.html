@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ .SiteTitle }}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Trust onboarding</p>
+        <h1>{{ .SiteTitle }}</h1>
+        <p class="lede">Install the public root certificate for <strong>{{ .DisplayedCAName }}</strong> so your devices can trust internal TLS endpoints without exposing any private CA material.</p>
+        <div class="actions">
+          <a class="button primary" href="{{ .RootURL }}">Download root certificate</a>
+          <a class="button secondary" href="{{ .IOSURL }}">Download iOS profile</a>
+          <a class="button secondary" href="{{ .AndroidURL }}">Download Android certificate</a>
+        </div>
+      </div>
+      <aside class="hero-card">
+        {{ if .HasLogo }}
+        <img class="logo" src="{{ .LogoURL }}" alt="{{ .OrganizationName }} logo">
+        {{ end }}
+        <dl>
+          <div><dt>Organization</dt><dd>{{ .OrganizationName }}</dd></div>
+          <div><dt>Certificate subject</dt><dd>{{ .CertificateSubject }}</dd></div>
+          <div><dt>Validity</dt><dd>{{ .CertificateValidity }}</dd></div>
+          <div><dt>SHA-256 fingerprint</dt><dd class="fingerprint">{{ .Fingerprint }}</dd></div>
+        </dl>
+      </aside>
+    </header>
+
+    <main>
+      <section class="grid two-up">
+        <article class="panel">
+          <h2>Quick start</h2>
+          <ol>
+            <li>Open this page on the target device or scan the matching QR code.</li>
+            <li>Install the public root certificate or the iOS profile.</li>
+            <li>Verify the SHA-256 fingerprint matches exactly.</li>
+            <li>Reconnect to your internal services after trust is installed.</li>
+          </ol>
+        </article>
+        <article class="panel qr-panel">
+          <h2>QR codes</h2>
+          <div class="qr-grid">
+            <figure><img src="{{ .HomeQRURL }}" alt="Home page QR"><figcaption>Open this page</figcaption></figure>
+            <figure><img src="{{ .IOSQRURL }}" alt="iOS profile QR"><figcaption>iOS profile</figcaption></figure>
+            <figure><img src="{{ .AndroidQRURL }}" alt="Android certificate QR"><figcaption>Android certificate</figcaption></figure>
+          </div>
+        </article>
+      </section>
+
+      <section class="platforms">
+        <article class="panel">
+          <h2>iOS</h2>
+          <p>Use the mobileconfig profile for the simplest path. After installation, enable full trust for the installed root certificate in Settings if iOS prompts for it.</p>
+          <p class="hint">Typical locations: {{ range $i, $v := .IOSLocations }}{{ if $i }}, {{ end }}<code>{{ $v }}</code>{{ end }}</p>
+          <a class="button primary" href="{{ .IOSURL }}">Download .mobileconfig</a>
+        </article>
+        <article class="panel">
+          <h2>Android</h2>
+          <p>Download the Android certificate in {{ .AndroidFormat }} format. Android support varies by version and management profile; some apps trust only user-installed or managed roots.</p>
+          <p class="hint">Typical locations: {{ range $i, $v := .AndroidLocations }}{{ if $i }}, {{ end }}<code>{{ $v }}</code>{{ end }}</p>
+          <a class="button primary" href="{{ .AndroidURL }}">Download Android .cer</a>
+        </article>
+        <article class="panel">
+          <h2>Windows</h2>
+          <p>Download the root certificate, open it, and import it into the Trusted Root Certification Authorities store for the local machine if you have the required privileges.</p>
+          <p class="hint">Typical locations: {{ range $i, $v := .WindowsLocations }}{{ if $i }}, {{ end }}<code>{{ $v }}</code>{{ end }}</p>
+          <a class="button secondary" href="{{ .RootURL }}">Download root .crt</a>
+        </article>
+        <article class="panel">
+          <h2>macOS</h2>
+          <p>Download the root certificate, open Keychain Access, import the certificate into the System keychain, and set it to Always Trust when appropriate.</p>
+          <p class="hint">Typical locations: {{ range $i, $v := .MacOSLocations }}{{ if $i }}, {{ end }}<code>{{ $v }}</code>{{ end }}</p>
+          <a class="button secondary" href="{{ .RootURL }}">Download root .crt</a>
+        </article>
+        <article class="panel">
+          <h2>Linux</h2>
+          <p>Download the root certificate and add it to your distribution's trust store, such as <code>/usr/local/share/ca-certificates</code> on Debian-based systems, then refresh the trust bundle.</p>
+          <p class="hint">Typical locations: {{ range $i, $v := .LinuxLocations }}{{ if $i }}, {{ end }}<code>{{ $v }}</code>{{ end }}</p>
+          <a class="button secondary" href="{{ .RootURL }}">Download root .crt</a>
+        </article>
+      </section>
+
+      <section class="grid two-up">
+        <article class="panel">
+          <h2>Domains covered</h2>
+          <div class="lists">
+            <div>
+              <h3>Internal</h3>
+              <ul>
+                {{ range .InternalDomains }}<li>{{ . }}</li>{{ else }}<li>No internal domains listed.</li>{{ end }}
+              </ul>
+            </div>
+            <div>
+              <h3>External</h3>
+              <ul>
+                {{ range .ExternalDomains }}<li>{{ . }}</li>{{ else }}<li>No external domains listed.</li>{{ end }}
+              </ul>
+            </div>
+          </div>
+        </article>
+        <article class="panel">
+          <h2>Troubleshooting</h2>
+          <ul>
+            <li>Check the SHA-256 fingerprint before trusting the certificate.</li>
+            <li>Confirm the device date and time are correct.</li>
+            <li>Remove old copies of the root certificate if trust still fails.</li>
+            <li>Some apps use their own trust store and may ignore system roots.</li>
+            {{ if .SupportText }}<li>{{ .SupportText }}{{ if .SupportURL }} <a href="{{ .SupportURL }}">More help</a>.{{ end }}</li>{{ end }}
+          </ul>
+        </article>
+      </section>
+
+      {{ if .AdvancedSectionEnabled }}
+      <section class="panel">
+        <h2>Advanced and manual</h2>
+        <p>Prefer the iOS profile or direct downloads above. For manual workflows, download the PEM root certificate, distribute it through your MDM or configuration tooling, and compare the SHA-256 fingerprint before installation.</p>
+        <p class="hint">Configured source path: <code>{{ .RootCASourcePath }}</code></p>
+        <p class="hint">Manual locations: {{ range $i, $v := .ManualLocations }}{{ if $i }}, {{ end }}<code>{{ $v }}</code>{{ end }}</p>
+        <p><a class="button secondary" href="{{ .ManualPEMURL }}">Download PEM root certificate</a></p>
+      </section>
+      {{ end }}
+    </main>
+
+    <footer class="footer">
+      <p>{{ .FooterText }}</p>
+    </footer>
+  </div>
+</body>
+</html>

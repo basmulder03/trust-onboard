@@ -1,0 +1,37 @@
+name: trust-onboard
+arch: "{{ .Env.PACKAGE_ARCH | default \"amd64\" }}"
+platform: linux
+version: "{{ .Env.VERSION | default \"dev\" }}"
+section: default
+priority: optional
+maintainer: trust-onboard operators
+description: Public trust onboarding portal for step-ca deployments
+homepage: https://github.com/example/trust-onboard
+license: MIT
+contents:
+  - src: ./bin/trust-onboard
+    dst: /usr/local/bin/trust-onboard
+    file_info:
+      mode: 0755
+  - src: ./config.example.yaml
+    dst: /etc/trust-onboard/config.yaml
+    type: config|noreplace
+    file_info:
+      mode: 0644
+  - src: ./packaging/trust-onboard.service
+    dst: /usr/lib/systemd/system/trust-onboard.service
+    file_info:
+      mode: 0644
+  - src: ./assets/root_ca.crt
+    dst: /var/lib/trust-onboard/assets/root_ca.crt
+    type: config|noreplace
+    file_info:
+      mode: 0644
+  - src: ./assets/logo.svg
+    dst: /var/lib/trust-onboard/assets/logo.svg
+    type: config|noreplace
+    file_info:
+      mode: 0644
+scripts:
+  postinstall: ./packaging/postinstall.sh
+  preremove: ./packaging/preremove.sh
