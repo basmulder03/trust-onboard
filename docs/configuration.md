@@ -73,20 +73,16 @@ advanced_section_enabled: true
 
 `root_ca_cert_path` is still supported.
 
-- If `root_ca_locations.source_path` is set, it takes precedence
-- If `root_ca_locations.source_path` is omitted, it defaults to `root_ca_cert_path`
+- `root_ca_locations.source_path` takes precedence
+- if omitted, it defaults to `root_ca_cert_path`
 
 ## Certificate input
 
-Place only the public root certificate on disk.
-
-Example:
+Place only the public root certificate on disk, for example:
 
 - `/var/lib/trust-onboard/assets/root_ca.crt`
 
-The file may be PEM or DER encoded.
-
-Do not place private keys, provisioners, ACME account material, or other CA secrets in this project.
+The file may be PEM or DER encoded. Do not place private keys, provisioners, ACME account material, or other CA secrets in this project.
 
 ## Generated artifacts
 

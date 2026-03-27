@@ -12,8 +12,6 @@
 
 ## systemd deployment
 
-Recommended paths:
-
 - Binary: `/usr/local/bin/trust-onboard`
 - Config: `/etc/trust-onboard/config.yaml`
 - Assets: `/var/lib/trust-onboard/assets/`

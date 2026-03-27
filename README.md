@@ -5,7 +5,7 @@
 
 `trust-onboard` is a single-binary Go service for publishing public `step-ca` trust material.
 
-It serves a small onboarding site, generates iOS and Android trust artifacts on demand, prints the CA fingerprint, and stays intentionally narrow: no issuance, no CA admin actions, no database, and no secret material.
+It serves a small onboarding site, generates iOS and Android trust artifacts on demand, prints the CA fingerprint, and avoids issuance, admin actions, databases, and secret material.
 
 ## Quick links
 
@@ -18,21 +18,9 @@ It serves a small onboarding site, generates iOS and Android trust artifacts on 
 
 ## Quick start
 
-Validate a config:
-
 ```bash
 go run ./cmd/trust-onboard validate --config config.example.yaml
-```
-
-Run the server:
-
-```bash
 go run ./cmd/trust-onboard serve --config config.example.yaml
-```
-
-Generate artifacts:
-
-```bash
 go run ./cmd/trust-onboard generate --config config.example.yaml --output-dir ./dist
 ```
 
@@ -61,4 +49,4 @@ This project includes an interactive installer for Linux machines and containers
 ./scripts/install.sh
 ```
 
-It downloads the correct published binary, verifies checksums, and is designed to work on Debian, Ubuntu, and common Proxmox LXC setups, including root-only environments where `sudo` is not installed.
+It downloads a published binary, verifies checksums, and works on Debian, Ubuntu, and common Proxmox LXC setups, including root-only environments without `sudo`.

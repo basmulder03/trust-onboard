@@ -19,7 +19,7 @@ make package-deb-arm64 VERSION=1.0.0
 make package-rpm-arm64 VERSION=1.0.0
 ```
 
-Check the derived release version:
+Show the derived release version:
 
 ```bash
 make release-version
@@ -36,4 +36,4 @@ The automated release pipeline builds:
 - Linux amd64 and arm64 `rpm` packages
 - `sha256sums.txt`
 
-Published release artifacts allow `scripts/install.sh` to install directly without requiring a local build toolchain on the target machine.
+Published artifacts let `scripts/install.sh` install without a local build toolchain.
