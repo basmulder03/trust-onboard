@@ -17,6 +17,29 @@ REMOVE_ASSETS=${TRUST_ONBOARD_REMOVE_ASSETS:-0}
 REMOVE_USER=${TRUST_ONBOARD_REMOVE_USER:-0}
 REMOVE_GROUP=${TRUST_ONBOARD_REMOVE_GROUP:-0}
 
+usage() {
+    cat <<'EOF'
+Usage: ./scripts/uninstall.sh [--help]
+
+Removes the installed trust-onboard service and binary. Config, assets, user,
+and group are kept unless explicitly removed.
+
+Environment variables:
+  TRUST_ONBOARD_UNATTENDED=1   Run without prompts
+  TRUST_ONBOARD_REMOVE_CONFIG=1 Remove /etc/trust-onboard/config.yaml
+  TRUST_ONBOARD_REMOVE_ASSETS=1 Remove /var/lib/trust-onboard/assets
+  TRUST_ONBOARD_REMOVE_USER=1   Remove trust-onboard service user
+  TRUST_ONBOARD_REMOVE_GROUP=1  Remove trust-onboard service group
+EOF
+}
+
+case ${1:-} in
+    -h|--help)
+        usage
+        exit 0
+        ;;
+esac
+
 log() {
     printf '[uninstall] %s\n' "$*"
 }

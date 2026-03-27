@@ -13,6 +13,26 @@ UNATTENDED=${TRUST_ONBOARD_UNATTENDED:-0}
 DOWNLOAD_BIN=
 CHECKSUM_FILE=
 
+usage() {
+    cat <<'EOF'
+Usage: ./scripts/upgrade.sh [--help]
+
+Upgrades the installed trust-onboard binary from a published release and
+restarts the systemd service when available.
+
+Environment variables:
+  TRUST_ONBOARD_UNATTENDED=1   Run without prompts
+  TRUST_ONBOARD_VERSION        Release tag to install, default: latest
+EOF
+}
+
+case ${1:-} in
+    -h|--help)
+        usage
+        exit 0
+        ;;
+esac
+
 log() {
     printf '[upgrade] %s\n' "$*"
 }

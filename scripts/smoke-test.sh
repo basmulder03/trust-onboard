@@ -12,6 +12,27 @@ TMP_IOS=
 TMP_ANDROID=
 TMP_ROOT=
 
+usage() {
+    cat <<'EOF'
+Usage: ./scripts/smoke-test.sh [base-url]
+
+Runs a simple post-install smoke test against a running trust-onboard service.
+
+Arguments:
+  base-url                     Optional base URL, default: http://127.0.0.1:8080
+
+Environment variables:
+  TRUST_ONBOARD_BASE_URL       Base URL when no argument is provided
+EOF
+}
+
+case ${1:-} in
+    -h|--help)
+        usage
+        exit 0
+        ;;
+esac
+
 log() {
     printf '[smoke-test] %s\n' "$*"
 }

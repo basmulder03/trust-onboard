@@ -38,6 +38,10 @@ Run from a local checkout:
 ./scripts/upgrade.sh
 ./scripts/smoke-test.sh
 ./scripts/uninstall.sh
+./scripts/install.sh --help
+./scripts/upgrade.sh --help
+./scripts/smoke-test.sh --help
+./scripts/uninstall.sh --help
 ```
 
 The script fills in defaults from the current machine and prompts for the rest.

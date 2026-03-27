@@ -24,6 +24,43 @@ SERVICE_TMP=
 OS_ID=unknown
 OS_LIKE=
 
+usage() {
+    cat <<'EOF'
+Usage: ./scripts/install.sh [--help]
+
+Installs trust-onboard from a published release, writes config and assets,
+and optionally enables the systemd service.
+
+Environment variables:
+  TRUST_ONBOARD_UNATTENDED=1            Skip prompts and use defaults/env vars
+  TRUST_ONBOARD_VERSION                 Release tag to install, default: latest
+  TRUST_ONBOARD_ROOT_CERT_PATH          Public root certificate path
+  TRUST_ONBOARD_LOGO_PATH               Optional logo path
+  TRUST_ONBOARD_SITE_TITLE              Site title
+  TRUST_ONBOARD_ORGANIZATION_NAME       Organization or homelab name
+  TRUST_ONBOARD_LISTEN_ADDRESS          Listen address, default: :8080
+  TRUST_ONBOARD_BASE_URL                Public base URL
+  TRUST_ONBOARD_DISPLAYED_CA_NAME       Displayed CA name
+  TRUST_ONBOARD_SUPPORT_TEXT            Support text
+  TRUST_ONBOARD_SUPPORT_URL             Support URL
+  TRUST_ONBOARD_INTERNAL_DOMAINS        Comma-separated internal domains
+  TRUST_ONBOARD_EXTERNAL_DOMAINS        Comma-separated external domains
+  TRUST_ONBOARD_ANDROID_FORMAT          pem or der
+  TRUST_ONBOARD_ADVANCED_ENABLED        true or false
+  TRUST_ONBOARD_PAYLOAD_IDENTIFIER      iOS payload identifier
+  TRUST_ONBOARD_PAYLOAD_DISPLAY_NAME    iOS payload display name
+  TRUST_ONBOARD_PAYLOAD_ORGANIZATION    iOS payload organization
+  TRUST_ONBOARD_PAYLOAD_DESCRIPTION     iOS payload description
+EOF
+}
+
+case ${1:-} in
+    -h|--help)
+        usage
+        exit 0
+        ;;
+esac
+
 log() {
     printf '[install] %s\n' "$*"
 }
