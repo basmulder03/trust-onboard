@@ -47,6 +47,8 @@ This project includes an interactive installer for Linux machines and containers
 
 ```bash
 ./scripts/install.sh
+./scripts/upgrade.sh
+./scripts/uninstall.sh
 ```
 
 It downloads a published binary, verifies checksums, and works on Debian, Ubuntu, and common Proxmox LXC setups, including root-only environments without `sudo`.

@@ -3,6 +3,8 @@
 This project includes an interactive Linux installer:
 
 - `scripts/install.sh`
+- `scripts/upgrade.sh`
+- `scripts/uninstall.sh`
 
 It is intended for Debian, Ubuntu, and common Proxmox container setups.
 
@@ -32,6 +34,8 @@ Run from a local checkout:
 
 ```bash
 ./scripts/install.sh
+./scripts/upgrade.sh
+./scripts/uninstall.sh
 ```
 
 The script fills in defaults from the current machine and prompts for the rest.
@@ -40,7 +44,29 @@ By default it installs the latest public release. To pin a specific release:
 
 ```bash
 TRUST_ONBOARD_VERSION=v0.1.0 ./scripts/install.sh
+TRUST_ONBOARD_VERSION=v0.1.0 ./scripts/upgrade.sh
 ```
+
+## Upgrade behavior
+
+The upgrade script:
+
+- downloads the requested release binary
+- verifies checksums
+- stops the service when `systemd` is available
+- replaces the installed binary
+- validates the existing config
+- starts the service again
+
+## Uninstall behavior
+
+The uninstall script:
+
+- stops and disables the service when present
+- removes the systemd unit and installed binary
+- optionally removes config, assets, service user, and service group
+
+It defaults to keeping config and assets unless you explicitly confirm removal.
 
 ## Auto-detection behavior
 
