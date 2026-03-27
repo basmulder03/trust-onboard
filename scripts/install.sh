@@ -16,6 +16,7 @@ INSTALL_SERVICE=/etc/systemd/system/trust-onboard.service
 RELEASE_REPO=basmulder03/trust-onboard
 DEFAULT_RELEASE=latest
 TMPDIR=${TMPDIR:-/tmp}
+UNATTENDED=${TRUST_ONBOARD_UNATTENDED:-0}
 
 DOWNLOAD_BIN=
 CONFIG_TMP=
@@ -64,6 +65,10 @@ detect_os() {
 prompt_default() {
     prompt_text=$1
     default_value=$2
+    if [ "$UNATTENDED" = "1" ]; then
+        printf '%s' "$default_value"
+        return
+    fi
     printf '%s [%s]: ' "$prompt_text" "$default_value" >&2
     IFS= read -r reply || true
     if [ -z "$reply" ]; then
@@ -76,6 +81,10 @@ prompt_default() {
 prompt_optional() {
     prompt_text=$1
     default_value=$2
+    if [ "$UNATTENDED" = "1" ]; then
+        printf '%s' "$default_value"
+        return
+    fi
     printf '%s [%s]: ' "$prompt_text" "$default_value" >&2
     IFS= read -r reply || true
     if [ -z "$reply" ]; then
@@ -88,6 +97,12 @@ prompt_optional() {
 prompt_yes_no() {
     prompt_text=$1
     default_value=$2
+    if [ "$UNATTENDED" = "1" ]; then
+        case $default_value in
+            y|Y|yes|YES) return 0 ;;
+            *) return 1 ;;
+        esac
+    fi
     printf '%s [%s]: ' "$prompt_text" "$default_value" >&2
     IFS= read -r reply || true
     case ${reply:-$default_value} in
@@ -366,6 +381,9 @@ trap cleanup EXIT INT TERM
 
 detect_os
 log "detected OS: $OS_ID ${OS_LIKE:+($OS_LIKE)}"
+if [ "$UNATTENDED" = "1" ]; then
+    log "running in unattended mode"
+fi
 
 prepare_binary
 
@@ -394,25 +412,28 @@ LOGO_CANDIDATE=$(find_first_file \
     "$INSTALL_ASSET_DIR/logo.png" \
     2>/dev/null || true)
 
-[ -n "$ROOT_CERT_CANDIDATE" ] || die "could not find a public root certificate; place one in ./assets or a common step-ca path"
+[ -n "${TRUST_ONBOARD_ROOT_CERT_PATH:-}" ] && ROOT_CERT_CANDIDATE=$TRUST_ONBOARD_ROOT_CERT_PATH
+[ -n "$ROOT_CERT_CANDIDATE" ] || die "could not find a public root certificate; set TRUST_ONBOARD_ROOT_CERT_PATH or place one in ./assets or a common step-ca path"
 
-SITE_TITLE=$(prompt_default "Site title" "$SITE_TITLE_DEFAULT")
-ORGANIZATION_NAME=$(prompt_default "Organization or homelab name" "$ORG_DEFAULT")
-LISTEN_ADDRESS=$(prompt_default "Listen address" ":8080")
-BASE_URL=$(prompt_default "Base URL" "$BASE_URL_DEFAULT")
-DISPLAYED_CA_NAME=$(prompt_default "Displayed CA name" "$DISPLAYED_CA_DEFAULT")
-SUPPORT_TEXT=$(prompt_optional "Support text" "$SUPPORT_TEXT_DEFAULT")
-SUPPORT_URL=$(prompt_optional "Support URL" "")
-INTERNAL_DOMAINS=$(prompt_optional "Internal domains (comma-separated)" "")
-EXTERNAL_DOMAINS=$(prompt_optional "External domains (comma-separated)" "")
-ANDROID_FORMAT=$(prompt_default "Android cert format (pem or der)" "pem")
-ADVANCED_ENABLED=$(prompt_default "Enable advanced section (true or false)" "true")
-PAYLOAD_IDENTIFIER=$(prompt_default "iOS payload identifier" "$PAYLOAD_ID_DEFAULT")
-PAYLOAD_DISPLAY_NAME=$(prompt_default "iOS payload display name" "$DISPLAYED_CA_NAME")
-PAYLOAD_ORGANIZATION=$(prompt_default "iOS payload organization" "$ORGANIZATION_NAME")
-PAYLOAD_DESCRIPTION=$(prompt_default "iOS payload description" "Installs the public root certificate used by internal services.")
+SITE_TITLE=$(prompt_default "Site title" "${TRUST_ONBOARD_SITE_TITLE:-$SITE_TITLE_DEFAULT}")
+ORGANIZATION_NAME=$(prompt_default "Organization or homelab name" "${TRUST_ONBOARD_ORGANIZATION_NAME:-$ORG_DEFAULT}")
+LISTEN_ADDRESS=$(prompt_default "Listen address" "${TRUST_ONBOARD_LISTEN_ADDRESS:-:8080}")
+BASE_URL=$(prompt_default "Base URL" "${TRUST_ONBOARD_BASE_URL:-$BASE_URL_DEFAULT}")
+DISPLAYED_CA_NAME=$(prompt_default "Displayed CA name" "${TRUST_ONBOARD_DISPLAYED_CA_NAME:-$DISPLAYED_CA_DEFAULT}")
+SUPPORT_TEXT=$(prompt_optional "Support text" "${TRUST_ONBOARD_SUPPORT_TEXT:-$SUPPORT_TEXT_DEFAULT}")
+SUPPORT_URL=$(prompt_optional "Support URL" "${TRUST_ONBOARD_SUPPORT_URL:-}")
+INTERNAL_DOMAINS=$(prompt_optional "Internal domains (comma-separated)" "${TRUST_ONBOARD_INTERNAL_DOMAINS:-}")
+EXTERNAL_DOMAINS=$(prompt_optional "External domains (comma-separated)" "${TRUST_ONBOARD_EXTERNAL_DOMAINS:-}")
+ANDROID_FORMAT=$(prompt_default "Android cert format (pem or der)" "${TRUST_ONBOARD_ANDROID_FORMAT:-pem}")
+ADVANCED_ENABLED=$(prompt_default "Enable advanced section (true or false)" "${TRUST_ONBOARD_ADVANCED_ENABLED:-true}")
+PAYLOAD_IDENTIFIER=$(prompt_default "iOS payload identifier" "${TRUST_ONBOARD_PAYLOAD_IDENTIFIER:-$PAYLOAD_ID_DEFAULT}")
+PAYLOAD_DISPLAY_NAME=$(prompt_default "iOS payload display name" "${TRUST_ONBOARD_PAYLOAD_DISPLAY_NAME:-$DISPLAYED_CA_NAME}")
+PAYLOAD_ORGANIZATION=$(prompt_default "iOS payload organization" "${TRUST_ONBOARD_PAYLOAD_ORGANIZATION:-$ORGANIZATION_NAME}")
+PAYLOAD_DESCRIPTION=$(prompt_default "iOS payload description" "${TRUST_ONBOARD_PAYLOAD_DESCRIPTION:-Installs the public root certificate used by internal services.}")
 
-if [ -n "$LOGO_CANDIDATE" ] && prompt_yes_no "Use detected logo at $LOGO_CANDIDATE?" "y"; then
+if [ -n "${TRUST_ONBOARD_LOGO_PATH:-}" ]; then
+    SELECTED_LOGO=$TRUST_ONBOARD_LOGO_PATH
+elif [ -n "$LOGO_CANDIDATE" ] && prompt_yes_no "Use detected logo at $LOGO_CANDIDATE?" "y"; then
     SELECTED_LOGO=$LOGO_CANDIDATE
 else
     SELECTED_LOGO=
