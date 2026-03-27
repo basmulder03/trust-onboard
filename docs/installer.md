@@ -4,6 +4,7 @@ This project includes an interactive Linux installer:
 
 - `scripts/install.sh`
 - `scripts/upgrade.sh`
+- `scripts/smoke-test.sh`
 - `scripts/uninstall.sh`
 
 It is intended for Debian, Ubuntu, and common Proxmox container setups.
@@ -35,6 +36,7 @@ Run from a local checkout:
 ```bash
 ./scripts/install.sh
 ./scripts/upgrade.sh
+./scripts/smoke-test.sh
 ./scripts/uninstall.sh
 ```
 
@@ -57,6 +59,22 @@ The upgrade script:
 - replaces the installed binary
 - validates the existing config
 - starts the service again
+
+## Smoke test behavior
+
+The smoke-test script:
+
+- checks `/healthz`
+- fetches the landing page
+- confirms the expected fingerprint is present
+- downloads the root certificate, iOS profile, and Android certificate
+
+By default it tests `http://127.0.0.1:8080`. To target a different URL:
+
+```bash
+./scripts/smoke-test.sh https://trust.example.internal
+TRUST_ONBOARD_BASE_URL=https://trust.example.internal ./scripts/smoke-test.sh
+```
 
 ## Uninstall behavior
 

@@ -48,6 +48,7 @@ This project includes an interactive installer for Linux machines and containers
 ```bash
 ./scripts/install.sh
 ./scripts/upgrade.sh
+./scripts/smoke-test.sh
 ./scripts/uninstall.sh
 ```
 
