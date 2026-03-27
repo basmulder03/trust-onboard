@@ -25,9 +25,9 @@ Check the derived release version:
 make release-version
 ```
 
-## GitHub release workflow
+## Release artifacts
 
-The workflow in `.github/workflows/release.yml` builds:
+The release workflow builds:
 
 - Linux amd64 and arm64 binaries
 - macOS amd64 and arm64 binaries
@@ -36,22 +36,4 @@ The workflow in `.github/workflows/release.yml` builds:
 - Linux amd64 and arm64 `rpm` packages
 - `sha256sums.txt`
 
-Trigger a release by pushing a tag:
-
-```bash
-git tag v0.1.0
-git push origin v0.1.0
-```
-
-Public releases also allow `scripts/install.sh` to install directly from GitHub without requiring a local build toolchain on the target machine.
-
-## One-time GitHub bootstrap
-
-To create the repository with `gh`:
-
-```bash
-git init
-git add .
-git commit -m "Initial trust-onboard import"
-gh repo create basmulder03/trust-onboard --public --source=. --remote=origin --push
-```
+Published release artifacts allow `scripts/install.sh` to install directly without requiring a local build toolchain on the target machine.

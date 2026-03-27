@@ -11,9 +11,9 @@ It serves a small onboarding site, generates iOS and Android trust artifacts on 
 
 - Docs index: `docs/README.md`
 - Configuration: `docs/configuration.md`
-- Installation and bootstrap scripts: `docs/installer.md`
+- Installation: `docs/installer.md`
 - Deployment and `systemd`: `docs/deployment.md`
-- Packaging and releases: `docs/packaging.md`
+- Packaging: `docs/packaging.md`
 - Development: `docs/development.md`
 
 ## Quick start
@@ -51,7 +51,7 @@ go run ./cmd/trust-onboard generate --config config.example.yaml --output-dir ./
 - No `step-ca` admin features
 - No `step-ca` config editing
 - No private keys, provisioners, or CA secrets
-- No runtime GitHub integration
+- No runtime source-control integration
 
 ## Install helper
 
@@ -61,4 +61,4 @@ This repo includes an interactive installer for Linux machines and containers:
 ./scripts/install.sh
 ```
 
-It downloads the correct binary from GitHub Releases, verifies checksums, and is designed to work on Debian, Ubuntu, and common Proxmox LXC setups, including root-only environments where `sudo` is not installed.
+It downloads the correct published binary, verifies checksums, and is designed to work on Debian, Ubuntu, and common Proxmox LXC setups, including root-only environments where `sudo` is not installed.

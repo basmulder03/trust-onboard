@@ -15,7 +15,7 @@ It is intended for common self-hosted environments such as:
 
 - Detects whether it is running as root or needs `sudo`
 - Detects Debian/Ubuntu-style package managers and can install `curl` if needed
-- Downloads the correct release binary from GitHub Releases
+- Downloads the correct published release binary
 - Verifies the downloaded binary against `sha256sums.txt`
 - Searches common locations for a public root CA certificate
 - Searches common locations for a logo file
@@ -75,15 +75,11 @@ If `systemctl` is not available, the script still installs the files and generat
 
 ## Release download requirements
 
-The installer expects the repository to be public so the release assets are reachable without authentication.
+The installer expects published releases to be reachable without interactive authentication.
 
 It downloads:
 
 - the platform-specific binary
 - `sha256sums.txt`
 
-from GitHub Releases and verifies the binary when `sha256sum` or `shasum` is available.
-
-## Related scripts
-
-- `scripts/bootstrap-gh.sh` - one-time GitHub repository bootstrap helper
+from the release download endpoint and verifies the binary when `sha256sum` or `shasum` is available.
