@@ -8,6 +8,7 @@ SERVICE_NAME=trust-onboard.service
 RELEASE_REPO=basmulder03/trust-onboard
 DEFAULT_RELEASE=latest
 TMPDIR=${TMPDIR:-/tmp}
+UNATTENDED=${TRUST_ONBOARD_UNATTENDED:-0}
 
 DOWNLOAD_BIN=
 CHECKSUM_FILE=
@@ -98,6 +99,10 @@ trap cleanup EXIT INT TERM
 
 [ -f "$INSTALL_CONFIG" ] || warn "config file not found at $INSTALL_CONFIG"
 [ -x "$INSTALL_BIN" ] || warn "existing binary not found at $INSTALL_BIN"
+
+if [ "$UNATTENDED" = "1" ]; then
+    log "running in unattended mode"
+fi
 
 asset_name=$(detect_asset_name)
 version=${TRUST_ONBOARD_VERSION:-$DEFAULT_RELEASE}

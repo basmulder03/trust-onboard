@@ -55,3 +55,4 @@ This project includes an interactive installer for Linux machines and containers
 It downloads a published binary, verifies checksums, and works on Debian, Ubuntu, and common Proxmox LXC setups, including root-only environments without `sudo`.
 
 For unattended installs, set `TRUST_ONBOARD_UNATTENDED=1` and provide values through environment variables. See `docs/installer.md`.
+The same unattended mode also works for `upgrade.sh` and `uninstall.sh`.

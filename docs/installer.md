@@ -86,6 +86,26 @@ Useful variables:
 - `TRUST_ONBOARD_PAYLOAD_ORGANIZATION`
 - `TRUST_ONBOARD_PAYLOAD_DESCRIPTION`
 
+For upgrades, unattended mode uses the same `TRUST_ONBOARD_UNATTENDED=1` flag plus `TRUST_ONBOARD_VERSION` when you want to pin a release.
+
+For uninstalls, unattended mode keeps config, assets, user, and group by default. To remove them as well, set one or more of:
+
+- `TRUST_ONBOARD_REMOVE_CONFIG=1`
+- `TRUST_ONBOARD_REMOVE_ASSETS=1`
+- `TRUST_ONBOARD_REMOVE_USER=1`
+- `TRUST_ONBOARD_REMOVE_GROUP=1`
+
+Examples:
+
+```bash
+TRUST_ONBOARD_UNATTENDED=1 TRUST_ONBOARD_VERSION=v0.1.0 ./scripts/upgrade.sh
+
+TRUST_ONBOARD_UNATTENDED=1 \
+TRUST_ONBOARD_REMOVE_CONFIG=1 \
+TRUST_ONBOARD_REMOVE_ASSETS=1 \
+./scripts/uninstall.sh
+```
+
 ## Upgrade behavior
 
 The upgrade script:
