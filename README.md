@@ -1,7 +1,7 @@
 # trust-onboard
 
 > [!WARNING]
-> This repository was vibe coded. Treat it as a starting point, review the code, and test it in your own environment before production use.
+> This project was vibe coded. Treat it as a starting point, review the code, and test it in your own environment before production use.
 
 `trust-onboard` is a single-binary Go service for publishing public `step-ca` trust material.
 
@@ -51,11 +51,11 @@ go run ./cmd/trust-onboard generate --config config.example.yaml --output-dir ./
 - No `step-ca` admin features
 - No `step-ca` config editing
 - No private keys, provisioners, or CA secrets
-- No runtime source-control integration
+- No runtime external platform integration
 
 ## Install helper
 
-This repo includes an interactive installer for Linux machines and containers:
+This project includes an interactive installer for Linux machines and containers:
 
 ```bash
 ./scripts/install.sh

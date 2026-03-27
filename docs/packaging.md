@@ -27,7 +27,7 @@ make release-version
 
 ## Release artifacts
 
-The release workflow builds:
+The automated release pipeline builds:
 
 - Linux amd64 and arm64 binaries
 - macOS amd64 and arm64 binaries

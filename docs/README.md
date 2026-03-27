@@ -1,7 +1,7 @@
 # Documentation
 
 > [!WARNING]
-> This repository was vibe coded. Review and test before production use.
+> This project was vibe coded. Review and test before production use.
 
 - `docs/configuration.md` - config fields, defaults, and compatibility notes
 - `docs/installer.md` - interactive installer

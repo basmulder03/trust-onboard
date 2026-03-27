@@ -1,6 +1,6 @@
 # Installer
 
-The repo includes an interactive Linux installer:
+This project includes an interactive Linux installer:
 
 - `scripts/install.sh`
 
@@ -33,7 +33,7 @@ It is intended for common self-hosted environments such as:
 
 ## Usage
 
-Run from the repo checkout:
+Run from a local checkout:
 
 ```bash
 ./scripts/install.sh
